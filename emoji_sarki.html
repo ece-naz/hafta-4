@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Şarkı Önerici</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            transition: background-color 0.8s ease-in-out;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+        }
+
+        .emoji-btn {
+            font-size: 4rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            filter: grayscale(20%);
+            padding: 1rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 0.5rem;
+        }
+
+        .emoji-btn:hover {
+            transform: scale(1.2) rotate(10deg);
+            filter: grayscale(0%);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .song-container {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            margin-top: 3rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .song-container.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .youtube-btn {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #ef4444; /* Tailwind red-500 */
+            color: white;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+        }
+
+        .youtube-btn:hover {
+            background-color: #dc2626; /* Tailwind red-600 */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(239, 68, 68, 0.4);
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="z-10 flex flex-col items-center">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-2 text-center drop-shadow-sm">Ruh Halini Seç</h1>
+        <p class="text-gray-600 mb-10 text-lg text-center font-medium bg-white/50 px-6 py-2 rounded-full backdrop-blur-sm">Sana uygun bir parça bulalım</p>
+
+        <div class="flex flex-wrap justify-center gap-4 md:gap-8">
+            <div class="emoji-btn" onclick="selectMood('happy')" title="Mutlu">😁</div>
+            <div class="emoji-btn" onclick="selectMood('sad')" title="Hüzünlü">🥺</div>
+            <div class="emoji-btn" onclick="selectMood('energetic')" title="Enerjik">⚡</div>
+            <div class="emoji-btn" onclick="selectMood('chill')" title="Sakin">☕</div>
+            <div class="emoji-btn" onclick="selectMood('romantic')" title="Romantik">💖</div>
+        </div>
+
+        <div id="song-display" class="song-container">
+            <div id="mood-icon" class="text-6xl mb-4 animate-pulse-slow">🎵</div>
+            <h2 id="song-title" class="text-2xl font-bold text-gray-800 mb-2">Şarkı Bekleniyor...</h2>
+            <p id="song-artist" class="text-gray-500 text-lg mb-4">Lütfen bir emoji seçin</p>
+            <a id="youtube-link" href="#" target="_blank" class="youtube-btn hidden">🎶 YouTube'da Dinle</a>
+        </div>
+    </div>
+
+    <script>
+        const songs = {
+            happy: {
+                title: "Don't Stop Me Now",
+                artist: "Queen",
+                emoji: "😁",
+                bgColor: "#fef08a", // yellow-200
+                link: "https://www.youtube.com/watch?v=HgzGwKwLmgM"
+            },
+            sad: {
+                title: "Someone Like You",
+                artist: "Adele",
+                emoji: "🥺",
+                bgColor: "#bfdbfe", // blue-200
+                link: "https://www.youtube.com/watch?v=hLQl3WQQoQ0"
+            },
+            energetic: {
+                title: "Eye of the Tiger",
+                artist: "Survivor",
+                emoji: "⚡",
+                bgColor: "#fecaca", // red-200
+                link: "https://www.youtube.com/watch?v=btPJPFnesV4"
+            },
+            chill: {
+                title: "Weightless",
+                artist: "Marconi Union",
+                emoji: "☕",
+                bgColor: "#bbf7d0", // green-200
+                link: "https://www.youtube.com/watch?v=UfcAVejslrU"
+            },
+            romantic: {
+                title: "Perfect",
+                artist: "Ed Sheeran",
+                emoji: "💖",
+                bgColor: "#fbcfe8", // pink-200
+                link: "https://www.youtube.com/watch?v=2Vv-BfVoq4g"
+            }
+        };
+
+        function selectMood(mood) {
+            const data = songs[mood];
+            const container = document.getElementById('song-display');
+            
+            // Arka plan rengini değiştir
+            document.body.style.backgroundColor = data.bgColor;
+
+            // Önceki animasyonu sıfırla
+            container.classList.remove('active');
+            
+            setTimeout(() => {
+                // İçeriği güncelle
+                document.getElementById('mood-icon').textContent = data.emoji;
+                document.getElementById('song-title').textContent = data.title;
+                document.getElementById('song-artist').textContent = data.artist;
+                
+                const ytLink = document.getElementById('youtube-link');
+                ytLink.href = data.link;
+                ytLink.classList.remove('hidden');
+
+                // Yeni içerikle animasyonu başlat
+                container.classList.add('active');
+            }, 300); // Kapanma animasyonu için kısa bir gecikme
+        }
+    </script>
+</body>
+</html>
